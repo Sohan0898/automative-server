@@ -28,7 +28,21 @@ app.use(express.json());
    try {
      // Connect the client to the server	(optional starting in v4.7)
     const productCollection = client.db('ProductsDB').collection('products');
+    const brandCollection = client.db('ProductsDB').collection('brands');
+    
 
+    app.get('/brands', async (req, res)=>{
+        const cursor =brandCollection.find();
+        const result= await  cursor.toArray();
+        res.send(result);
+    })
+
+    app.get('/products', async (req, res)=>{
+        const cursor =productCollection.find();
+        const result= await  cursor.toArray();
+        res.send(result);
+    })
+    
     app.post('/products', async (req, res)=>{
         const newProduct = req.body;
         console.log(newProduct);
