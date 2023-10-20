@@ -30,6 +30,17 @@ app.use(express.json());
     const productCollection = client.db('ProductsDB').collection('products');
     const brandCollection = client.db('ProductsDB').collection('brands');
     
+    
+    app.get('/products/:brand', async (req, res) => {
+        
+        const brand = req.params.brand; 
+        const query = { brand: brand};
+        const result= await productCollection.find(query).toArray();
+        console.log(result);
+        res.send(result)
+
+            
+      });
 
     app.get('/brands', async (req, res)=>{
         const cursor =brandCollection.find();
@@ -50,6 +61,9 @@ app.use(express.json());
         res.send(result);
     });
 
+
+
+    
 
 
      await client.connect();
