@@ -29,7 +29,25 @@ app.use(express.json());
      // Connect the client to the server	(optional starting in v4.7)
     const productCollection = client.db('ProductsDB').collection('products');
     const brandCollection = client.db('ProductsDB').collection('brands');
+    const mycartCollection = client.db('ProductsDB').collection('myCart');
     
+    app.get('/myCart/:email', async (req, res) => {
+        
+      const email = req.params.email; 
+      const query = { email: email};
+      const result= await mycartCollection.find(query).toArray();
+      console.log(result);
+      res.send(result)
+
+          
+    });
+
+    app.get('/myCart', async (req, res)=>{
+      const cursor =mycartCollection.find();
+      const result= await  cursor.toArray();
+      res.send(result);
+  })
+
     app.get('/products/brand/:id', async (req, res)=>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)}
@@ -68,6 +86,12 @@ app.use(express.json());
         res.send(result);
     });
 
+    app.post('/myCart', async (req, res)=>{
+      const newCart = req.body;
+      console.log(newCart);
+      const result = await mycartCollection.insertOne(newCart);
+      res.send(result);
+  });
 
 
     app.put('/products/brand/:id', async (req, res) => {
@@ -89,6 +113,14 @@ app.use(express.json());
         const result = await productCollection.updateOne(filter, product, options);
         res.send(result);
       })
+
+      app.delete('/myCart/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const result = await mycartCollection.deleteOne(query);
+        res.send(result);
+ 
+     })
 
 
      await client.connect();
